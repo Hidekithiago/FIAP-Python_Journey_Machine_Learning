@@ -69,3 +69,44 @@ def dtFrame():
     dataframe= pd.DataFrame(array_aleatorio, index=indice_datas, columns=['A', 'B', 'C', 'D'])
     print("Abaixo está nosso dataframe")
     print(dataframe)
+
+def dtFrameDicionario():
+    dataframe= pd.DataFrame({
+            "A": 1.0,
+            "B": pd.Timestamp("20210101"),
+            "C": pd.Series([1.2, 3.7, 5.5, 6], dtype="float32"),
+            "D": np.array([12,5,6,9], dtype="int32"),
+            "E": pd.Categorical(["novo", "usado", "usado", "novo"])
+    })
+    print("Abaixo está nosso dataframeconstruído a partir de um dicionário")
+    print(dataframe)
+    print("Abaixo está a parte de cima do nosso dataframe")
+    print(dataframe.head())
+    print("Abaixo está a parte de baixo do nosso dataframe")
+    print(dataframe.tail(2))
+    print("Abaixo estão os índices do nosso dataframe")
+    print(dataframe.index)
+    print("Abaixo estão as colunas do nosso dataframe")
+    print(dataframe.columns)
+    print("Abaixo está nosso dataframeconvertido para um arraynumpy")
+    print(dataframe.to_numpy())
+    print("Abaixo estão estatísticas básicas dobre nosso dataframe")
+    print(dataframe.describe())
+    print("Abaixo está nosso dataframeordenado por uma coluna")
+    print(dataframe.sort_values(by="D"))
+    
+    print("Abaixo exibimos os dados da coluna C")
+    print(dataframe["C"])
+    print("Abaixo exibimos apenas um intervalo de linhas")
+    print(dataframe[0:2])
+    print("Abaixo exibimos apenas os valores do dataframeem que a coluna D seja maior do que 7")
+    print(dataframe[dataframe["D"] > 7])
+    print("Abaixo exibimos apenas os valores em que a coluna E contém o valor 'usado'")
+    print(dataframe[dataframe["E"].isin(["usado"])])
+    
+    print("Exportando dataframepara o formato CSV")
+    dataframe.to_csv("arquivo_csv.csv")
+    print("Exportando dataframepara o formato XLSX")
+    dataframe.to_excel("arquivo_excel.xlsx", sheet_name="Sheet1")
+    print("Convertendo o dataframepara o formato JSON")
+    print(dataframe.to_json())
