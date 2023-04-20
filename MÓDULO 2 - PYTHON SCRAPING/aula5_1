@@ -1,0 +1,114 @@
+import sqlite3
+class Product:
+    def __init__(self, id, name, price):
+        self.__id= id
+        self.__name= name
+        self.__price= price
+    def get_id(self):
+        return self.__id
+    def set_name(self, name):
+        self.__name= name
+    def get_name(self):
+        return self.__name
+    def set_price(self, price):
+        self.__price= price
+    def get_price(self):
+        return self.__price
+file_db = "mySchemma.db"
+
+def open_connection():
+    connection = None
+    try:
+        connection = sqlite3.connect(file_db)
+    except sqlite3.Error as e:
+        print("Erro:", e)
+
+    return connection
+
+def close_connection(connection):
+    if connection:
+        connection.close()
+
+def create_table(connection, sql_create_table):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_create_table)
+        connection.commit()
+    except sqlite3.Error as e:
+        print("Erro:", e)
+
+def insert_product(connection, sql_insert_product):
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_insert_product)
+        connection.commit()
+    except sqlite3.Error as e:
+        print("Erro:", e)
+
+def delete_products(connection):
+    sql_delete_products = "DELETE FROM products"
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_delete_products)
+        connection.commit()
+    except sqlite3.Error as e:
+        print("Erro:", e)
+
+def update_product(connection, product):
+    sql_update_product = "UPDATE products SET name = ?, price = ? WHERE id=?"
+    commands=[product.get_name(), product.get_price(), product.get_id()]
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_update_product, commands)
+        connection.commit()
+    except sqlite3.Error as e:
+        print("Erro:", e)
+
+
+def select_products(connection):
+    sql_select_products = "SELECT * FROM products order by price"
+    products = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute(sql_select_products)
+        products = cursor.fetchall()
+    except sqlite3.Error as e:
+        print("Erro:", e)
+    finally:
+        return products
+
+# Abrindo a Conexão
+connection = open_connection()
+
+# Criando a tabela
+sql_create_table = """CREATE TABLE IF NOT EXISTS products (
+id integer PRIMARY KEY AUTOINCREMENT,
+name text NOT NULL,
+price integer NOT NULL
+);"""
+
+create_table(connection, sql_create_table)
+
+# Inserindo produtos
+sql_insert_product_1 = "INSERT INTO products (name, price) VALUES ('Lego', 150)"
+sql_insert_product_2 = "INSERT INTO products (name, price) VALUES ('Cubo Mágico', 60)"
+sql_insert_product_3 = "INSERT INTO products (name, price) VALUES ('Boneco Comandos em Ação', 150)"
+insert_product(connection, sql_insert_product_1)
+insert_product(connection, sql_insert_product_2)
+insert_product(connection, sql_insert_product_3)
+
+# Removendo produtos
+#delete_products(connection)
+
+product_1 = Product(69, 'Lego Minecraft', 500)
+update_product(connection, product_1)
+
+# Buscando produtos
+products = select_products(connection)
+
+# Mostrando os produtos
+for product in products:
+    print(f'Cód: {product[0]} - Produto {product[1]} - preço: R$ {product[2]}')
+
+# Fechando a Conexão
+close_connection(connection)

@@ -1,0 +1,82 @@
+from mysql.connector import connect, Error
+
+try:
+    with connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="pymysql",
+    ) as connection:
+        print(connection)
+
+    create_ALUNOS_table_query = """
+        CREATE TABLE ALUNOS (
+        RM int unsigned NOT NULL auto_increment,
+        NOME varchar(50) NOT NULL,
+        TURMA varchar(5) NOT NULL,
+        PRIMARY KEY (RM)
+    );"""
+    
+    with connection.cursor() as cursor:
+        cursor.execute(create_ALUNOS_table_query)
+        connection.commit()
+
+        insert_ALUNOS_query = """
+        INSERT INTO ALUNOS (RM, NOME, TURMA)
+        VALUES
+        (1, "Ada Lovelace", "2SIO"),
+        (2, "Alan Turing", "2SIO"),
+        (3, "Albert Einstein", "2SIO"),
+        (4, "Alexander Fleming", "2SIO"),
+        (5, "Charles Darwin", "2SIO"),
+        (6, "Chien-Shiung Wu", "2SIO"),
+        (7, "Gertrude Elion", "2SIO"),
+        (8, "Isaac Newton", "2SIO"),
+        (9, "Katherine Johnson", "2SIO"),
+        (10, "Louis Pasteur", "2SIO"),
+        (11, "Marie Curie", "2SIO"),
+        (12, "Mayana Zatz", "2SIO"),
+        (13, "Michael Faraday", "2SIO"),
+        (14, "Rosalind Franklin", "2SIO")
+        """
+        cursor.execute(insert_ALUNOS_query)
+        connection.commit()
+
+        print('\n', "SELECT all:")
+        select_ALUNOS_query = "SELECT * FROM ALUNOS ORDER BY NOME ASC"
+        cursor.execute(select_ALUNOS_query)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
+        insert_1_ALUNO_query = """
+        INSERT INTO ALUNOS (RM, NOME, TURMA)
+        VALUES
+        (15, "Emerson", "2SIO")
+        """
+        cursor.execute(insert_1_ALUNO_query)
+        connection.commit()
+
+        print('\n', "SELECT one:")
+        select_1_ALUNO_query = "SELECT RM, NOME, TURMA FROM ALUNOS WHERE NOME LIKE \'%Faraday%\'"
+        cursor.execute(select_1_ALUNO_query)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
+        delete_1_ALUNO_query = "DELETE FROM ALUNOS WHERE NOME LIKE \'%Faraday%\'"
+        cursor.execute(delete_1_ALUNO_query)
+
+        print('\n', "SELECT one:")
+        select_1_ALUNO_query = "SELECT RM, NOME, TURMA FROM ALUNOS WHERE NOME LIKE \'%Faraday%\'"
+        cursor.execute(select_1_ALUNO_query)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
+        # drop_ALUNOS_query = "DROP TABLE IF EXISTS ALUNOS"
+        # cursor.execute(drop_ALUNOS_query)
+
+        connection.close()
+except Error as e:
+    print(e)
